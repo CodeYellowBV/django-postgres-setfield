@@ -42,8 +42,12 @@ class SetField(ArrayField):
     # This is to ensure that lookups are using lists rather than sets.
     # There are some lookups of the ArrayField where this will work by
     # accident, presumably because they iterate over the values.
+    #
+    # This also ensures that the __exact lookup will return the sets
+    # which are equal (because get_db_prep_value will ensure it's
+    # stored in sorted order).
     def get_prep_value(self, value):
-        return list(value)
+        return sorted(value)
 
 
     def get_db_prep_value(self, value, connection, prepared=False):
@@ -51,9 +55,9 @@ class SetField(ArrayField):
         # going through "set" constructor if it's already a set, for
         # performance reasons.
         if isinstance(value, (set, frozenset)):
-            return super().get_db_prep_value(list(value), connection, prepared=prepared)
+            return super().get_db_prep_value(sorted(value), connection, prepared=prepared)
         elif hasattr(value, '__iter__'):
-            return super().get_db_prep_value(list(set(value)), connection, prepared=prepared)
+            return super().get_db_prep_value(sorted(set(value)), connection, prepared=prepared)
         else:
             return super().get_db_prep_value(value, connection, prepared=prepared)
 

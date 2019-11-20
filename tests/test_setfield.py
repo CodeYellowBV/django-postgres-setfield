@@ -152,6 +152,7 @@ class SetFieldTest(TestCase):
         q = SetTest.objects.filter(text_value={'RED'})
         self.assertEqual(0, q.count())
 
+        # NOTE: This is dependent on sort order!
         q = SetTest.objects.filter(text_value={'RED', 'GREEN'})
         self.assertEqual(1, q.count())
         self.assertEqual(obj1, q.get())

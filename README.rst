@@ -45,5 +45,9 @@ lookups are supported.
 Caveats
 -------
 
-Unlike ArrayFields, SetFields cannot be nested (because sets cannot be
-nested in Python).
+* Unlike ArrayFields, SetFields cannot be nested (because sets cannot
+  be nested in Python).
+* When upgrading an existing ArrayField to a SetField, make sure the
+  entries are sorted using the default sort order of Python for the
+  corresponding object type, if you want to use the ``__exact``
+  lookup.  Otherwise you'll get inconsistent results.
