@@ -35,6 +35,16 @@ class SetFieldTest(TestCase):
         self.assertStrictEqual(set(), obj.int_value)
 
 
+    def test_empty_list_as_default_survives_db_roundtrip_as_set(self):
+        obj = SetTest()
+        self.assertStrictEqual(set(), obj.int_value)
+        obj.save()
+
+        obj.refresh_from_db()
+        self.assertIsNone(obj.text_value)
+        self.assertStrictEqual(set(), obj.int_value)
+
+
     def test_basic_frozenset_value_survives_db_roundtrip_as_set(self):
         input_text_value = frozenset(['RED', 'GREEN'])
         input_int_value = frozenset([1, 2, 3])

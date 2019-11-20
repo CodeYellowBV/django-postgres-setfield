@@ -29,6 +29,16 @@ class SetField(ArrayField):
         return 'Set of %s' % self.base_field.description
 
 
+    def get_default(self):
+        default = super().get_default()
+        if isinstance(default, set):
+            return default
+        elif hasattr(default, '__iter__'):
+            return set(default)
+        else:
+            return default
+
+
     # This is to ensure that lookups are using lists rather than sets.
     # There are some lookups of the ArrayField where this will work by
     # accident, presumably because they iterate over the values.
