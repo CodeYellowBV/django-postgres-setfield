@@ -133,6 +133,19 @@ class SetFieldTest(TestCase):
         q = SetTest.objects.filter(text_value__contained_by={'RED', 'GREEN', 'BLUE'})
         self.assertEqual(2, q.count())
 
+        # Strangely enough, this filter was the only one to raise an
+        # error of "can't adapt type", while the ones above worked.
+        q = SetTest.objects.filter(text_value__overlap={'RED'})
+        self.assertEqual(1, q.count())
+        self.assertEqual(obj1, q.get())
+
+        q = SetTest.objects.filter(text_value={'RED'})
+        self.assertEqual(0, q.count())
+
+        q = SetTest.objects.filter(text_value={'RED', 'GREEN'})
+        self.assertEqual(1, q.count())
+        self.assertEqual(obj1, q.get())
+
 
     def test_set_deduplication_is_done_by_save(self):
         obj = SetTest(text_value=['RED', 'GREEN', 'RED', 'GREEN', 'RED', 'GREEN'], int_value=[1, 2, 1, 2, 3])

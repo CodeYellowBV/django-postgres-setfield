@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class SetField(ArrayField):
     """Stores set objects.
-    
+
     Uses Array on PostgreSQL.
     """
     description = _("SetField")
@@ -24,14 +24,26 @@ class SetField(ArrayField):
                 return value
 
 
+    @property
+    def description(self):
+        return 'Set of %s' % self.base_field.description
+
+
+    # This is to ensure that lookups are using lists rather than sets.
+    # There are some lookups of the ArrayField where this will work by
+    # accident, presumably because they iterate over the values.
+    def get_prep_value(self, value):
+        return list(value)
+
+
     def get_db_prep_value(self, value, connection, prepared=False):
         # Normalise to list and pass on to ArrayField.  Avoid first
         # going through "set" constructor if it's already a set, for
         # performance reasons.
-        if hasattr(value, '__iter__') and not isinstance(value, (set, frozenset)):
-            return super().get_db_prep_value(list(set(value)), connection, prepared=prepared)
-        elif isinstance(value, (set, frozenset)):
+        if isinstance(value, (set, frozenset)):
             return super().get_db_prep_value(list(value), connection, prepared=prepared)
+        elif hasattr(value, '__iter__'):
+            return super().get_db_prep_value(list(set(value)), connection, prepared=prepared)
         else:
             return super().get_db_prep_value(value, connection, prepared=prepared)
 
