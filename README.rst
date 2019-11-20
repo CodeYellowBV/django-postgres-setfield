@@ -4,14 +4,14 @@ django-postgres-setfield
 .. image:: https://travis-ci.org/CodeYellowBV/django-postgres-setfield.svg?branch=master
    :target: https://travis-ci.org/CodeYellowBV/django-postgres-setfield
 
-A Django field for storing `standard Python set <https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset>`
+A Django field for storing `standard Python set <https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset>`_
 objects.  It uses Postgres arrays as a backing store.
 
 Usage
 -----
 
 Using the field is straightforward, and similar to how you'd use a
-`Django ArrayField <https://docs.djangoproject.com/en/2.1/ref/contrib/postgres/fields/>`.
+`Django ArrayField <https://docs.djangoproject.com/en/2.1/ref/contrib/postgres/fields/>`_.
 You can add the field to your model like so:
 
 .. code:: python
@@ -38,7 +38,7 @@ Lookups
 -------
 
 All the standard
-`Django ArrayField <https://docs.djangoproject.com/en/2.1/ref/contrib/postgres/fields/#querying-arrayfield>`
+`Django ArrayField <https://docs.djangoproject.com/en/2.1/ref/contrib/postgres/fields/#querying-arrayfield>`_
 lookups are supported.
 
 
