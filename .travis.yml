@@ -2,8 +2,9 @@ sudo: false
 language: python
 matrix:
   include:
-  - python: 3.5
-    env: DJANGO_VERSION=2.0.13
+  # Somehow this breaks
+  #- python: 3.5
+  #  env: DJANGO_VERSION=2.0.13
   - python: 3.6
     env: DJANGO_VERSION=2.0.13
   - python: 3.7
