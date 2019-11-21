@@ -66,7 +66,7 @@ class SetFieldTest(TestCase):
 
 
     def test_none_value_also_survives_db_roundtrip(self):
-        obj = SetTest(text_value=None, int_value=set())
+        obj = SetTest(text_value=None, int_value={1})
         obj.save()
 
         obj.refresh_from_db()
@@ -74,7 +74,7 @@ class SetFieldTest(TestCase):
 
 
     def test_none_value_survives_full_clean(self):
-        obj = SetTest(text_value=None, int_value=set())
+        obj = SetTest(text_value=None, int_value={1})
         obj.full_clean()
         self.assertIsNone(obj.text_value)
 
@@ -101,6 +101,32 @@ class SetFieldTest(TestCase):
         self.assertStrictEqual([1, 1, 2, 1, 3], input_int_value)
 
 
+    def test_empty_list_value_is_normalized_on_full_clean_if_blankable(self):
+        obj = SetTest(text_value=[], int_value=[1])
+        obj.full_clean()
+
+        self.assertStrictEqual(set(), obj.text_value)
+        self.assertStrictEqual({1}, obj.int_value)
+
+
+    def test_empty_list_value_raises_blank_error_if_not_blankable(self):
+        obj = SetTest(text_value=[], int_value=[])
+
+        with self.assertRaises(ValidationError) as cm:
+            obj.full_clean()
+        self.assertEqual(set(['int_value']), set(cm.exception.error_dict.keys()))
+        self.assertEqual('blank', cm.exception.error_dict['int_value'][0].code)
+
+
+    def test_empty_set_value_raises_blank_error_if_not_blankable(self):
+        obj = SetTest(text_value=[], int_value=set())
+
+        with self.assertRaises(ValidationError) as cm:
+            obj.full_clean()
+        self.assertEqual(set(['int_value']), set(cm.exception.error_dict.keys()))
+        self.assertEqual('blank', cm.exception.error_dict['int_value'][0].code)
+
+
     def test_string_input_from_json(self):
         obj = SetTest(text_value='["GREEN", "RED"]', int_value='[1, 2, 3]')
         obj.full_clean()
@@ -110,17 +136,19 @@ class SetFieldTest(TestCase):
 
 
     def test_invalid_objects_raise_validation_errors(self):
-        obj = SetTest(int_value=set())
+        obj = SetTest(int_value={1})
 
         obj.text_value = True
         with self.assertRaises(ValidationError) as cm:
             obj.full_clean()
-        self.assertEqual(set(['text_value']), set(cm.exception.message_dict.keys()))
+        self.assertEqual(set(['text_value']), set(cm.exception.error_dict.keys()))
+        self.assertEqual('not_iterable', cm.exception.error_dict['text_value'][0].code)
 
         obj.text_value = 1
         with self.assertRaises(ValidationError) as cm:
             obj.full_clean()
-        self.assertEqual(set(['text_value']), set(cm.exception.message_dict.keys()))
+        self.assertEqual(set(['text_value']), set(cm.exception.error_dict.keys()))
+        self.assertEqual('not_iterable', cm.exception.error_dict['text_value'][0].code)
 
         obj.text_value = {'RED'}
         obj.full_clean()

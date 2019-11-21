@@ -12,6 +12,9 @@ class SetField(ArrayField):
         'not_iterable': _('Set field only accepts iterables'),
         **ArrayField.default_error_messages
     }
+    # Do not accept empty list as standard empty value because Django
+    # skips normalization of all these types.
+    empty_values = [set(), None, frozenset()]
 
     def to_python(self, value):
         value = super().to_python(value)
