@@ -37,9 +37,7 @@ Then later, you can use it:
 Lookups
 -------
 
-All the standard
-`Django ArrayField <https://docs.djangoproject.com/en/2.1/ref/contrib/postgres/fields/#querying-arrayfield>`_
-lookups are supported.
+All the standard `Django ArrayField`_ lookups are supported.
 
 
 Caveats
