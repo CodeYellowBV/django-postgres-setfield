@@ -19,8 +19,8 @@ setup(
         description='Django field for storing sets, backed by Postgres arrays',
         long_description=README,
         url='https://github.com/CodeYellowBV/django-postgres-setfield',
-        author='Peter Bex',
-        author_email='peter@codeyellow.nl',
+        author='Code Yellow B.V.',
+        author_email='django-postgres-setfield@codeyellow.nl',
         test_suite='tests',
         classifiers=[
                 'Environment :: Web Environment',
